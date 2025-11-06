@@ -1,0 +1,19 @@
+const jwt=require('jsonwebtoken');
+
+const authUser=async(req,res,next)=>{
+    const {token}=req.headers;
+    if(!token){
+        return res.json({success: false,message:'Not Authorized,Login again!'})
+    }
+
+    try{
+     const token_decoded=jwt.verify(token,process.env.JWT_SECRET);   // this is used to create userId from token and set to req.body
+     req.body.userId=token_decoded.id;
+     next();
+    }catch(error){
+      console.log(error);
+      res.json({success:false, message:error.message});
+    }
+}
+
+module.exports=authUser;
